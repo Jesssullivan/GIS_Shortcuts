@@ -74,7 +74,7 @@ mkdir GIS_Projects && cd GIS_Projects
 ```
 use wget to download every .dem file (-A .dem) from the specified folder and sub-folders (-r)
 ```
-wget ftp://ftp.granit.sr.unh.edu/pub/GRANIT_Data/Vector_Data/Elevation_and_Derived_Products/d-elevationdem
+wget -r -A .dem ftp://ftp.granit.sr.unh.edu/pub/GRANIT_Data/Vector_Data/Elevation_and_Derived_Products/d-elevationdem/
 
 cd ftp.granit.sr.unh.edu/pub/GRANIT_Data/Vector_Data/Elevation_and_Derived_Products/d-elevationdem
 ```
