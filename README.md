@@ -1,4 +1,4 @@
-# GIS_Shortcuts
+# GIS Shortcuts
 
 GIS from Bash, Python, and R    
 
@@ -6,7 +6,7 @@ GIS from Bash, Python, and R
 
 * * *       
 
-**GDAL for GIS on UNIX:  Using a Mac (or better, Linux)**
+**GDAL on OSX, Ubuntu & Windows WSL**
 
 Bash is great: It is a shell scripting language that is baked into every new Apple computer and many, many Linux distributions too.  It is fun to learn and easy to find your “insert repetitive task here” to Bash translation on Stack Exchange, just a search away.  As you uses the command prompt more and more for increasingly cool GIS tasks- be it for Python QGIS OR ESRI, R language for data cleaning and analysis, or just because you noticed you can get “mad amounts of work done” at increasingly faster rates- your vocabulary in the UNIX shell and bash will naturally grow.  
 
