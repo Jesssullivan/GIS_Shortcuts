@@ -157,4 +157,7 @@ You can now copy + paste your script anywhere you want and run it there.  script
 
 *See /Notes_GDAL/README.md for notes on building GDAL from source on OSX*
 
+<img title='Results' src="GDAL_Bash_DEM_Merge.png" width='300px' >  
+
+
 # :)
