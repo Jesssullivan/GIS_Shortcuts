@@ -1,7 +1,5 @@
 # GIS Shortcuts
 
-GIS from Bash, Python, and R    
-
 <img title='3d From the command line....' src="Python_Results.png" width='500px' >
 
 * * *       
