@@ -8,7 +8,8 @@
 
 * * *  
 
-**Index:**
+**Index:**  <br>
+
 [**GDAL Shell macros from R**](#rmacros) <br>
 [**GDAL setup on Mac OSX**](#osx) <br>
 [**Ubuntu GDAL setup on Windows WSL**](#wsl) <br>
