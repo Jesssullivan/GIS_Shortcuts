@@ -2,20 +2,117 @@
 
 <img title='3d From the command line....' src="Python_Results.png" width='500px' >
 
-* * *       
+* * *  
 
-**GDAL on OSX, Ubuntu & Windows WSL**
+*Miscellaneous gis notes, mostly derived from [my blog over here](https://www.transscendsurvival.org/)*
 
-Bash is great: It is a shell scripting language that is baked into every new Apple computer and many, many Linux distributions too.  It is fun to learn and easy to find your “insert repetitive task here” to Bash translation on Stack Exchange, just a search away.  As you uses the command prompt more and more for increasingly cool GIS tasks- be it for Python QGIS OR ESRI, R language for data cleaning and analysis, or just because you noticed you can get “mad amounts of work done” at increasingly faster rates- your vocabulary in the UNIX shell and bash will naturally grow.  
+* * *  
 
-I wanted to make a GIS post for Mac OS because it is both under-represented (for great reasons) in GIS and arguably the number 1 choice for any discerning consumers of computer hardware.   
+**Index:**
+[**GDAL Shell macros from R**](#rmacros) <br>
+[**GDAL setup on Mac OSX**](#osx) <br>
+[**Ubuntu GDAL setup on Windows WSL**](#wsl) <br>
+[**GDAL from Bash- DEM stitching**](#demstitch) <br>
 
-Many Linux OS options are faster for much of this “UNIX for GIS”, as quite a few of the things we need are already included with many Debian / Ubuntu distros, and come forms that have been stable for a long, long time.  
 
-If you are looking to setup a system primarily for GIS / data science (disregarding ESRI of course), See my initial notes on the Ubuntu variant Pop_OS by System76.  If you like the ChromeOS vibe for multitasking and simplicity and the familiarity of Mac OS, it is a keeper (and also a sleeper, seeing how many folks are still on Windows for GIS…….).  
+* * *
 
-**Open Terminal**
-(The less you have in your way on your screen, the faster you can go!)  xD
+
+***Some GDAL shell macros from R instead of rgdal***  
+
+[Visit this blog post](https://www.transscendsurvival.org/2020/03/01/1607/)
+
+*it's not R sacrilege if nobody knows*    
+
+<h4 id="rmacros"> </h4>     
+
+Even the little stuff benefits from some organizational scripting, even if it’s just to catalog one’s actions.  Here are some examples for common tasks.
+
+
+Get all the source data into a R-friendly format like csv.  `ogr2ogr` has a nifty option `-lco GEOMETRY=AS_WKT` (Well-Known-Text) to keep track of spatial data throughout abstractions- we can add the WKT as a cell until it is time to write the data out again.   
+```
+# define a shapefile conversion to csv from system's shell:
+sys_SHP2CSV <- function(shp) {
+  csvfile <- paste0(shp, '.csv')
+  shpfile <-paste0(shp, '.shp')
+  if (!file.exists(csvfile)) {
+    # use -lco GEOMETRY to maintain location
+    # for reference, shp --> geojson would look like:
+    # system('ogr2ogr -f geojson output.geojson input.shp')
+    # keeps geometry as WKT:
+    cmd <- paste('ogr2ogr -f CSV', csvfile, shpfile, '-lco GEOMETRY=AS_WKT')
+    system(cmd)  # executes command
+  } else {
+    print(paste('output file already exists, please delete', csvfile, 'before converting again'))
+  }
+  return(csvfile)
+}
+```
+
+Read the new csv into R:
+```
+# for file 'foo.shp':
+foo_raw <- read.csv(sys_SHP2CSV(shp='foo'), sep = ',')
+```
+
+One might do any number of things now, some here lets snag some columns and rename them:
+```
+# rename the subset of data "foo" we want in a data.frame:
+foo <- data.frame(foo_raw[1:5])
+colnames(foo) <- c('bar', 'eggs', 'ham', 'hello', 'world')
+```
+
+We could do some more careful parsing too, here a semicolon in cell strings can be converted to a comma:
+```
+# replace ` ; ` to ` , ` in col "bar":
+foo$bar <- gsub(pattern=";", replacement=",", foo$bar)
+```
+
+Do whatever you do for an output directory:
+```
+# make a output file directory if you're into that
+# my preference is to only keep one set of output files per run
+# here, we'd reset the directory before adding any new output files
+redir <- function(outdir) {
+  if (dir.exists(outdir)) {
+    system(paste('rm -rf', outdir))
+  }
+  dir.create(outdir)
+}
+```
+
+Even though this is totally adding a level of complexity to what could be a single `ogr2ogr`  command, I've decided it is still worth it- I'd definitely rather keep track of everything I do over forget what I did.... xD
+
+```
+# make some methods to write out various kinds of files via gdal:
+to_geoJSON <- function(target) {
+  print(paste('converting', target, 'to geojson .... '))
+  system(paste('ogr2ogr -f', " geojson ",  paste0(target, '.geojson'), paste0(target, '.csv')))
+}
+
+to_SHP <- function(target) {
+  print(paste('converting ', target, ' to ESRI Shapefile .... '))
+  system(paste('ogr2ogr -f', " 'ESRI Shapefile' ",  paste0(target, '.shp'), paste0(target, '.csv')))
+}
+
+# name files:
+foo_name <- 'output_foo'
+
+# for table data 'foo', first:
+write.csv(foo, paste0(foo_name, '.csv'))
+
+# convert with the above csv:
+to_geoJSON(foo_name)
+to_SHP(foo_name)
+```
+
+* * *
+
+**Using GDAL on Mac OSX**
+
+<h4 id="osx"> </h4>     
+
+[Visit this blog post](https://www.transscendsurvival.org/2019/10/07/gdal-for-gis-on-unix-using-a-mac-or-better-linux/)
 
 Note: in my opinion, homebrew and macPorts are good ideas- try them!  If you don’t have it, get it now:
 ```
@@ -33,7 +130,7 @@ sudo port uninstall qgis py37-gdal
 brew list
 brew uninstall gdal geos gdal2  
 ```     
-*!!! NOTE:  I am investigating more reliable built-from-source solutions for gdal on mac.*      
+*!!! NOTE: I am investigating more reliable built-from-source solutions for gdal on mac.*      
 
 Really!
 
@@ -62,7 +159,9 @@ gdal_merge.py
 # list of args
 ```
 
-# Using Ubuntu GDAL on Windows w/ WSL   
+<h4 id="wsl"> </h4>     
+
+**Using Ubuntu GDAL on Windows w/ WSL**
 
 [LINK: get the WSL shell from Microsoft](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
@@ -78,7 +177,7 @@ sudo apt-get install gdal-bin -y
 # https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html
 ```     
 
-# In a new Shell:   
+***In a new Shell:***
 
 ```
 # Double check the shell does indeed have GDAL in $PATH:
@@ -86,7 +185,9 @@ gdalinfo --version
 
 ```
 
-***To begin- try a recent GIS assignment that relies on the ESRI mosaic system and lots of GUI and clicking but use GDAL instead.***
+*To begin- try a recent GIS assignment that would otherwise rely on the ESRI mosaic system:*
+
+<h4 id="demstitch"> </h4>     
 
 Data source: ftp://ftp.granit.sr.unh.edu/pub/GRANIT_Data/Vector_Data/Elevation_and_Derived_Products/d-elevationdem/d-10m/
 
@@ -157,5 +258,4 @@ You can now copy + paste your script anywhere you want and run it there.  script
 
 <img title='Results' src="GDAL_Bash_DEM_Merge.png" width='300px' >  
 
-
-# :)
+# xD
