@@ -131,13 +131,13 @@ to_SHP(foo_name)
 ***Regarding Windows-specific software, such as ArcMap:***
 
 *Remote Desktop:*     
-The greatest solution I've settled on for ArcMap use continues to be [Chrome Remote Desktop](https://remotedesktop.google.com/home), coupled with an [IT Surplus](https://www.plymouth.edu/webapp/itsurplus/) desktop I got for like $50. Once Chrome is good to go on the remote Windows computer, one can operate everything from a web browser from anywhere else (even reboot and share files to and from the remote computer).  While adding an additional, dedicated computer like this possible for many students, it is certainly the simplest and most dependable solution.  
+The greatest solution I've settled on for ArcMap use continues to be [Chrome Remote Desktop](https://remotedesktop.google.com/home), coupled with an [IT Surplus](https://www.plymouth.edu/webapp/itsurplus/) desktop purchased for ~$50. Once Chrome is good to go on the remote Windows computer, one can operate everything from a web browser from anywhere else (even reboot and share files to and from the remote computer).  While adding an additional, dedicated computer like this possible for many students, it is certainly the simplest and most dependable solution.  
 
 *VirtualBox, Bootcamp, etc:*          
 [Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads) is a longstanding (and free!) virtualization software.  A Windows virtual machine is vastly preferable over [Bootcamp](https://support.apple.com/boot-camp) or further [partition tomfoolery](https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux).
 One can start / stop the VM only when its needed, store it on a usb stick, avoid [insane pmbr issues](https://www.transscendsurvival.org/2019/02/27/mac-osx-fixing-gpt-and-pmbr-tables/), etc.      
 
-- Bootcamp will consume at least 40gb of space at all times before even attempting to function, whereas even a fully configured Windows VirtualBox VDI will only consume ~11gb, and can be moved elsewhere if not in use.        
+- Bootcamp will consume at least 40gb of space at all times before even attempting to function, whereas even a fully configured Windows VirtualBox VDI will only consume ~22gb, and can be moved elsewhere if not in use.        
 - There are better (not free) virtualization tools such as [Parallels](https://www.parallels.com/), though any way you slice it a dedicated machine will almost always be a better solution.      
 
 <br>
