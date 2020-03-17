@@ -10,10 +10,11 @@
 
 **Index:**  <br>
 
-[**GDAL Shell macros from R**](#rmacros) <br>
-[**GDAL setup on Mac OSX**](#osx) <br>
-[**Ubuntu GDAL setup on Windows WSL**](#wsl) <br>
-[**GDAL from Bash- DEM stitching**](#demstitch) <br>
+[**Shell macros from R**](#rmacros) <br>
+[**When it must be Windows**](#windows) <br>
+[**Mac OSX - GDAL setup**](#osx) <br>
+[**Windows WSL - Ubuntu GDAL setup**](#wsl) <br>
+[**Bash Example - DEM stitching**](#demstitch) <br>
 
 
 * * *
@@ -80,13 +81,30 @@ redir <- function(outdir) {
   }
   dir.create(outdir)
 }
+
+```
+Of course, once your data is in R there are countless "R things" one could do...
+```
+# iterate to fill empty cells with preceding values
+for (i in 1:length(foo[,1])) {
+  if (nchar(foo$bar[i]) < 1) {
+    foo$bar[i] <- foo$bar[i-1]
+  }
+  # fill incomplete rows with NA values:
+  if (nchar(foo$bar[i]) < 1) {
+    foo[i,] <- NA  
+  }
+}
+
+# remove NA rows if there is nothing better to do:
+newfoo <- na.omit(foo)
 ```
 
 Even though this is totally adding a level of complexity to what could be a single `ogr2ogr`  command, I've decided it is still worth it- I'd definitely rather keep track of everything I do over forget what I did.... xD
 
 ```
 # make some methods to write out various kinds of files via gdal:
-to_geoJSON <- function(target) {
+to_GEO <- function(target) {
   print(paste('converting', target, 'to geojson .... '))
   system(paste('ogr2ogr -f', " geojson ",  paste0(target, '.geojson'), paste0(target, '.csv')))
 }
@@ -103,9 +121,45 @@ foo_name <- 'output_foo'
 write.csv(foo, paste0(foo_name, '.csv'))
 
 # convert with the above csv:
-to_geoJSON(foo_name)
 to_SHP(foo_name)
 ```
+
+
+<h4 id="windows"> </h4>     
+
+
+***Regarding Windows-specific software, such as ArcMap:***
+
+*Remote Desktop:*     
+The greatest solution I've settled on for ArcMap use continues to be [Chrome Remote Desktop](https://remotedesktop.google.com/home), coupled with an [IT Surplus](https://www.plymouth.edu/webapp/itsurplus/) desktop I got for like $50. Once Chrome is good to go on the remote Windows computer, one can operate everything from a web browser from anywhere else (even reboot and share files to and from the remote computer).  While adding an additional, dedicated computer like this possible for many students, it is certainly the simplest and most dependable solution.  
+
+*VirtualBox, Bootcamp, etc:*          
+[Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads) is a longstanding (and free!) virtualization software.  A Windows virtual machine is vastly preferable over [Bootcamp](https://support.apple.com/boot-camp) or further [partition tomfoolery](https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux).
+One can start / stop the VM only when its needed, store it on a usb stick, avoid [insane pmbr issues](https://www.transscendsurvival.org/2019/02/27/mac-osx-fixing-gpt-and-pmbr-tables/), etc.      
+
+- Bootcamp will consume at least 40gb of space at all times before even attempting to function, whereas even a fully configured Windows VirtualBox VDI will only consume ~11gb, and can be moved elsewhere if not in use.        
+- There are better (not free) virtualization tools such as [Parallels](https://www.parallels.com/), though any way you slice it a dedicated machine will almost always be a better solution.      
+
+<br>
+
+**Setup & Configure VirtualBox:**
+- [Install VirtualBox- link](https://www.virtualbox.org/wiki/Downloads)     
+- [Download a Windows 10 ISO- link](https://www.microsoft.com/en-us/software-download/windows10ISO)   
+
+There are numerous sites with VirtualBox guides, so I will not go into detail here.
+
+*Extra bits on setup-*    
+- [Guest Additions](https://www.virtualbox.org/manual/ch04.html) are not necessary, despite what some folks may suggest.    
+- Dynamically Allocated VDI is the way to go as a virtual disk.  There is no reason not to set the allocated disk size to the biggest value allowed, as it will never consume any more space than the virtual machine actually needs.   
+- Best to click through all the other machine settings just to see what is available, it is easy enough to make changes over time.
+
+
+- There are many more levels of convoluted not worth stooping to, ranging from ArcMap via [AWS EC2](https://aws.amazon.com/ec2/) or [openstack](https://www.openstack.org/) to [KVM/QEMU](https://www.linux-kvm.org/page/Main_Page) to [WINE](https://www.winehq.org/about). *Take it from me*
+
+<br>
+
+***xD***
+
 
 * * *
 
@@ -115,11 +169,11 @@ to_SHP(foo_name)
 
 [Visit this blog post](https://www.transscendsurvival.org/2019/10/07/gdal-for-gis-on-unix-using-a-mac-or-better-linux/)
 
-Note: in my opinion, homebrew and macPorts are good ideas- try them!  If you don’t have it, get it now:
+Note: in my opinion, homebrew and macPorts are good ideas- try them!  If you don’t have Homebrew, get it now:
 ```
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
-(….However, port or brew installing QGIS and GDAL (primarily surrounding the delicate links between QGIS / GDAL / Python 2 & 3 / OSX local paths) can cause baffling issues.  If possible, don’t do that.  Use QGIS installers from the official site and build from source!)
+(….However, port or brew installing QGIS and GDAL (primarily surrounding the delicate links between QGIS / GDAL / Python 2 & 3 / OSX local paths) can cause baffling issues.  If possible, don’t do that.  Use QGIS installers from the official site or build from source!)
 
 if you need to resolve issues with your GDAL packages via removal:
 on MacPorts, try similar:
@@ -190,13 +244,10 @@ gdalinfo --version
 
 <h4 id="demstitch"> </h4>     
 
-Data source: ftp://ftp.granit.sr.unh.edu/pub/GRANIT_Data/Vector_Data/Elevation_and_Derived_Products/d-elevationdem/d-10m/
-
-!!  Warning!  These files are not projected in a way ESRI or GDAL understands.  They WILL NOT HAVE A LOCATION IN QGIS.  They will, however, satisfy the needs of the assignment.     
+Data source: ftp://ftp.granit.sr.unh.edu/pub/GRANIT_Data/Vector_Data/Elevation_and_Derived_Products/d-elevationdem/d-10m/   
 
 ```
-# wget on mac is great.  This tool (default on linux) lets us grab GIS data from
-# most providers, via FTP and similar protocols.
+# wget is great, and is included in many distributions- it is not installed by default on Mac OSX however.
 
 brew install wget
 ```
@@ -216,9 +267,8 @@ this way we can still sort the various files for .dem)
 ```
 ls -1 *.dem > dem_list.txt
 ```
-use gdal to make state-plane referenced “Output_merged.tif” from the list of files
-in the index we made.
-it will use a single generic "0 0 255" band to show gradient.  
+use gdal to make state-plane referenced “Output_merged.tif” from the list of files in the index we made.
+We will use a single generic "0 0 255" band to show gradient.  
 
 ```
 gdal_merge.py -init "0 0 255" -o Output_Merged.tif --optfile dem_list.txt
@@ -253,7 +303,7 @@ run with ./
 ./GDAL_LiveMerge.sh
 ```     
 
-You can now copy + paste your script anywhere you want and run it there.  scripts like this should not be exported to your global path / bashrc and will only work if they are in the directory you are calling them:  If you need a global script, there are plenty of ways to do that too.
+You can now copy + paste your script anywhere you want and run it there.  scripts   like this should not be exported to your global path / bashrc and will only work if they are in the directory you are calling them:  If you need a global script, there are plenty of ways to do that too.
 
 *See /Notes_GDAL/README.md for notes on building GDAL from source on OSX*
 
