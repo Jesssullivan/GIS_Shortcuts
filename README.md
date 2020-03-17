@@ -131,7 +131,7 @@ to_SHP(foo_name)
 ***Regarding Windows-specific software, such as ArcMap:***
 
 *Remote Desktop:*     
-The greatest solution I've settled on for ArcMap use continues to be [Chrome Remote Desktop](https://remotedesktop.google.com/home), coupled with an [IT Surplus](https://www.plymouth.edu/webapp/itsurplus/) desktop purchased for ~$50. Once Chrome is good to go on the remote Windows computer, one can operate everything from a web browser from anywhere else (even reboot and share files to and from the remote computer).  While adding an additional, dedicated computer like this possible for many students, it is certainly the simplest and most dependable solution.  
+The greatest solution I've settled on for ArcMap use continues to be [Chrome Remote Desktop](https://remotedesktop.google.com/home), coupled with an [IT Surplus](https://www.plymouth.edu/webapp/itsurplus/) desktop purchased for ~$50. Once Chrome is good to go on the remote Windows computer, one can operate everything from a web browser from anywhere else (even reboot and share files to and from the remote computer).  While adding an additional, dedicated computer like this may not be possible for many students, it is certainly the simplest and most dependable solution.  
 
 *VirtualBox, Bootcamp, etc:*          
 [Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads) is a longstanding (and free!) virtualization software.  A Windows virtual machine is vastly preferable over [Bootcamp](https://support.apple.com/boot-camp) or further [partition tomfoolery](https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux).
