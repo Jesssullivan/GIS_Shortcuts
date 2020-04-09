@@ -15,7 +15,7 @@
 [**Mac OSX - GDAL setup**](#osx) <br>
 [**Windows WSL - Ubuntu GDAL setup**](#wsl) <br>
 [**Bash Example - DEM stitching**](#demstitch) <br>
-
+[**Link to rJDK management info**](https://github.com/Jesssullivan/rJDKmanager) <br>
 
 * * *
 
