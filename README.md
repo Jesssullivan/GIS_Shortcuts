@@ -1,3 +1,7 @@
+layout: page
+title: "PAGE TITLE"
+permalink: /URL-PATH/
+
 # GIS Shortcuts
 
 <img title='3d From the command line....' src="Python_Results.png" width='500px' >
