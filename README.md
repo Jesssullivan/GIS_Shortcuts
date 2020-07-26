@@ -22,7 +22,7 @@
 * * *
 
 
-***Some GDAL shell macros from R instead of rgdal***  
+# ***Some GDAL shell macros from R instead of rgdal***  
 
 [Visit this blog post](https://www.transscendsurvival.org/2020/03/01/1607/)
 
