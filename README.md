@@ -184,11 +184,11 @@ Follow that link for the window 10, 64 bit ISO.  YOU DO NOT NEED TO BUY WINDOWS
 
 <strong>Option one:  VirtualBox VM on a thumbdrive</strong>
 
-<a href="https://www.virtualbox.org/wiki/Downloads"><span style="font-weight: 400;">https://www.virtualbox.org/wiki/Downloads</span></a><span style="font-weight: 400;"> - VirtualBox downloads- *the VM will take up most of a 128gb flash drive- ~70 gb just for windows and all the stuff you'll want from a PC.  Add ESRI software and allocated space for a cache (where your GIS project works!), bigger is better.   Format all drives in disk utility as ExFat!  this is important, any other file system either won't fly or could wreak havoc (other FAT based ones may have too small file allocations!</span>*
+<a href="https://www.virtualbox.org/wiki/Downloads"><span style="font-weight: 400;">https://www.virtualbox.org/wiki/Downloads</span></a><span style="font-weight: 400;"> - VirtualBox downloads- *the VM will take up most of a 128gb flash drive- ~70 gb just for windows and all the stuff you'll want from a PC.  Add ESRI software and allocated space for a cache (where your GIS project works!), bigger is better.   Format all drives in disk utility as ExFat!  this is important, any other file system either won't fly or could wreak havoc (other FAT based ones may have too small file allocations!*
 
 <span style="font-weight: 400;">I used two drives, a 128 and a 64- this is great because I can store all my work on the 64, so I can easily plug it into other (school) machines running windows ArcMap and keep going, without causing issues with the massive VM in the 128.  </span>
 
-Installation is straightforward- added more screenshots of the process in [vmsetup]()
+Installation is straightforward- added more screenshots of the process in [vmsetup](https://github.com/Jesssullivan/GIS_Shortcuts/tree/master/vmsetup)
 
 <a href="https://transscendsurvival.org/wp-content/uploads/2018/04/Screen-Shot-2018-04-03-at-9.52.43-AM.png"><img class="size-medium wp-image-1033 alignnone" src="https://transscendsurvival.org/wp-content/uploads/2018/04/Screen-Shot-2018-04-03-at-9.52.43-AM-300x207.png" alt="" width="300" height="207" /></a> <a href="https://transscendsurvival.org/wp-content/uploads/2018/04/Screen-Shot-2018-04-03-at-9.52.38-AM.png"><img class="size-medium wp-image-1034 alignnone" src="https://transscendsurvival.org/wp-content/uploads/2018/04/Screen-Shot-2018-04-03-at-9.52.38-AM-300x213.png" alt="" width="300" height="213" /></a>
 
