@@ -1,7 +1,3 @@
-layout: page
-title: "PAGE TITLE"
-permalink: /URL-PATH/
-
 # GIS Shortcuts
 
 <img title='3d From the command line....' src="Python_Results.png" width='500px' >
@@ -15,8 +11,8 @@ permalink: /URL-PATH/
 **Index:**  <br>
 
 [**Shell macros from R**](#rmacros) <br>
-[**eBird API stuff**](#ebird) <br>
 [**When it must be Windows**](#windows) <br>
+[**eBird API stuff**](#ebird) <br>
 [**Windows WSL - Ubuntu GDAL setup**](#wsl) <br>
 [**Mac OSX - GDAL setup**](#osx) <br>
 [**Bash Example - DEM stitching**](#demstitch) <br>
@@ -25,8 +21,8 @@ permalink: /URL-PATH/
 
 * * *
 
-
-# ***Some GDAL shell macros from R instead of rgdal***  
+## *Some GDAL shell macros from R instead of rgdal*
+  
 
 [Visit this blog post](https://www.transscendsurvival.org/2020/03/01/1607/)
 
@@ -131,11 +127,13 @@ to_SHP(foo_name)
 ```
 
 
+  
 <h4 id="windows"> </h4>     
 
 
-***Regarding Windows-specific software, such as ArcMap:***
+## *Regarding Windows-specific software, such as ArcMap:*
 
+  
 *Remote Desktop:*     
 The greatest solution I've settled on for ArcMap use continues to be [Chrome Remote Desktop](https://remotedesktop.google.com/home), coupled with an [IT Surplus](https://www.plymouth.edu/webapp/itsurplus/) desktop purchased for ~$50. Once Chrome is good to go on the remote Windows computer, one can operate everything from a web browser from anywhere else (even reboot and share files to and from the remote computer).  While adding an additional, dedicated computer like this may not be possible for many students, it is certainly the simplest and most dependable solution.  
 
@@ -216,10 +214,12 @@ If you need to manage your cloud storage because of a itsy mac SSD, my solution 
 
 - - -
 
-
 <h4 id="wsl"> </h4>     
 
-**Using Ubuntu GDAL on Windows w/ WSL**
+  
+## *Using Ubuntu GDAL on Windows w/ WSL*
+
+
 
 [LINK: get the WSL shell from Microsoft](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
@@ -245,10 +245,11 @@ gdalinfo --version
 
 - - -
 
-
 <h4 id="ebird"> </h4>     
 
-***eBird regionCode***
+
+## *eBird regionCode*
+
 
 The [Ebird dataset](https://ebird.org/science/download-ebird-data-products) is awesome.  While directly handling data as a **massive** delimited file- as distributed by [the eBird people-](https://ebird.org/data/download) is cumbersome at best, the [ebird api](https://documenter.getpostman.com/view/664302/S1ENwy59?version=latest#e18ea3b5-e80c-479f-87db-220ce8d9f3b6) offers a fairly straightforward and efficient alternative for a few choice bits and batches of data.  
 
@@ -323,10 +324,10 @@ def get_regioncode(lat, lon):
 ```
 
 
-
 * * *
 
-**Using GDAL on Mac OSX**
+## *Using GDAL on Mac OSX*
+
 
 <h4 id="osx"> </h4>     
 
@@ -378,9 +379,13 @@ gdal_merge.py
 ```
 
 
+## *Example DEM stiching from GDAL*
+
+
+<h4 id="demstitch"> </h4>    
+
 *To begin- try a recent GIS assignment that would otherwise rely on the ESRI mosaic system:*
 
-<h4 id="demstitch"> </h4>     
 
 Data source: ftp://ftp.granit.sr.unh.edu/pub/GRANIT_Data/Vector_Data/Elevation_and_Derived_Products/d-elevationdem/d-10m/   
 
