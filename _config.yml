@@ -1,1 +1,11 @@
 theme: jekyll-theme-leap-day
+
+
+- title: Introduction
+  url: introduction.html
+
+- title: Configuration
+  url: configuration.html
+
+- title: Deployment
+  url: deployment.html
