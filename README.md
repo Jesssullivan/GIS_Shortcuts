@@ -131,7 +131,7 @@ to_SHP(foo_name)
 <h4 id="windows"> </h4>     
 
 
-## *Regarding Windows-specific software, such as ArcMap:*
+## *Regarding Windows-specific software, such as ArcMap*
 
   
 *Remote Desktop:*     
