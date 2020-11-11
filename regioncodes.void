@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 # provide latitude & longitude, return eBird "regionCode"
 Written by Jess Sullivan
