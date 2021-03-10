@@ -108,7 +108,7 @@ def get_regioncode(lat, lon):
 <h4 id="widget"> </h4>     
 
 
-# **GIS Wigdets, Web Apps & R/ Shiny**
+## *GIS Wigdets, Web Apps & R/ Shiny*
 
 Some experiments with simple web utilities for GIS tasks.
 
