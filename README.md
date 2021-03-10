@@ -10,8 +10,8 @@
 
 **Index:**  <br>
 
-[**R / Shiny Web Experiments**](#widget) <br>
 [**eBird API stuff**](#ebird) <br>
+[**R / Shiny Web Experiments**](#widget) <br>
 [**Shell macros from R**](#rmacros) <br>
 [**When it must be Windows**](#windows) <br>
 [**Windows WSL - Ubuntu GDAL setup**](#wsl) <br>
