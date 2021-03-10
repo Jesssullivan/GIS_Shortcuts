@@ -1,0 +1,43 @@
+{
+  "name": "kml-web-tools",
+  "productName": "kml-web-tools",
+  "version": "1.0.0",
+  "description": "very cool",
+  "main": "server.js",
+  "engines": {
+    "node": "8.12.0"
+  },
+  "scripts": {
+  "start": "node server.js",
+  "lint": "eslint src --color"
+  },
+  "keywords": [],
+  "author": "Jess Sullivan",
+  "license": "MIT",
+  "private": true,
+  "github_repository": {
+    "owner": "Jess Sullivan",
+    "name": "KML Web Tools"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "jade": "^1.11.0",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.9.2",
+    "path": "^0.12.7",
+    "portfinder": "^1.0.19",
+    "stylus": "^0.54.5"
+  },
+
+  "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.11.1",
+    "fs-extra": "^7.0.0"
+  }
+}
