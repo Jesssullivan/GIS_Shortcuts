@@ -10,13 +10,129 @@
 
 **Index:**  <br>
 
+[**R / Shiny Web Experiments**](#widget) <br>
+[**eBird API stuff**](#ebird) <br>
 [**Shell macros from R**](#rmacros) <br>
 [**When it must be Windows**](#windows) <br>
-[**eBird API stuff**](#ebird) <br>
 [**Windows WSL - Ubuntu GDAL setup**](#wsl) <br>
 [**Mac OSX - GDAL setup**](#osx) <br>
 [**Bash Example - DEM stitching**](#demstitch) <br>
 [**Link to rJDK management info**](https://github.com/Jesssullivan/rJDKmanager) <br>
+
+
+- - -
+
+
+<h4 id="ebird"> </h4>     
+
+
+## *eBird regionCode*
+
+
+The [Ebird dataset](https://ebird.org/science/download-ebird-data-products) is awesome.  While directly handling data as a **massive** delimited file- as distributed by [the eBird people-](https://ebird.org/data/download) is cumbersome at best, the [ebird api](https://documenter.getpostman.com/view/664302/S1ENwy59?version=latest#e18ea3b5-e80c-479f-87db-220ce8d9f3b6) offers a fairly straightforward and efficient alternative for a few choice bits and batches of data.  
+
+
+- The eBird `AWK` tool for filtering the actual delimited data can be [found over here](https://cornelllabofornithology.github.io/auk/):
+
+    ```install.packages("auk")```   
+
+It is worth noting R + `auk` (or frankly any R centered filtering method) will quickly become limited by the single-threaded approach of R, and how you're managing memory as you iterate.  Working and querying the data from a proper database quickly becomes necessary.  
+
+Most conveniently, the [eBird API already exists.](https://documenter.getpostman.com/view/664302/S1ENwy59?version=latest#e18ea3b5-e80c-479f-87db-220ce8d9f3b6)
+
+...The API package for R is [over here](https://cran.r-project.org/web/packages/rebird/index.html):        
+```install.packages("rebird")```     
+
+...There is also a neat Python wrapper [over here](https://pypi.org/project/ebird-api/):           
+```pip3 install ebird-api```
+
+***Region Codes:***     
+
+I'm not sure why, but some methods use normal latitude / longitude in decimal degrees while some others use `"regionCode"`, which seems to be some kind of eBird special.  Only ever seen this format in ebird data.
+
+For example, recent observations uses `regionCode`:     
+```shell script
+# GET Recent observations in a region:
+# https://api.ebird.org/v2/data/obs/{{regionCode}}/recent
+```
+...But nearby recent observations uses latitude / longitude:   
+```
+# GET Recent nearby observations:
+# https://api.ebird.org/v2/data/obs/geo/recent?lat={{lat}}&lng={{lng}}
+```
+
+Regardless, lets just write a function to convert decimal degrees to this `regionCode` thing.  Here's mine:
+
+
+```Python3
+#!/usr/bin/env python3
+"""
+# provide latitude & longitude, return eBird "regionCode"
+Written by Jess Sullivan
+@ https://transscendsurvival.org/
+"""
+import requests
+import json
+
+
+def get_regioncode(lat, lon):
+
+    # this municipal api is a publicly available, no keys needed afaict
+    census_url = str('https://geo.fcc.gov/api/census/area?lat=' +
+                     str(lat) +
+                     '&lon=' +
+                     str(lon) +
+                     '&format=json')
+
+    # send out a GET request:
+    payload = {}
+    get = requests.request("GET", census_url, data=payload)
+
+    # parse the response, all api values are contained in list 'results':
+    response = json.loads(get.content)['results'][0]
+
+    # use the last three digits from the in-state fips code as the "subnational 2" identifier:
+    fips = response['county_fips']
+
+    # assemble and return the "subnational type 2" code:
+    regioncode = 'US-' + response['state_code'] + '-' + fips[2] + fips[3] + fips[4]
+    print('formed region code: ' + regioncode)
+    return regioncode
+
+```
+
+
+- - - 
+
+
+<h4 id="widget"> </h4>     
+
+
+# **GIS Wigdets, Web Apps & R/ Shiny**
+
+Some experiments with simple web utilities for GIS tasks.
+
+Process manager experiments for R threads in [/Flask-Manager](/Flask-Manager).   
+
+Visit the [single threaded example here](https://kml-tools.herokuapp.com/); (Not load balanced, just for an example view).  These are wrapped in a Node.JS application on Heroku, which loads each utility through [shinyapps.io](https://www.shinyapps.io/).  These functions are hosted entirely through (Heroku / shinyapps) free tiers.
+
+See /[Docker-App](https://github.com/Jesssullivan/Shiny-Apps/tree/master/Docker-App) for deployment in the GCP app engine.
+
+- Raster2stl - converts raster data (image- a .jpg taken from a DEM file for instance) to a 3d STL file showing exagerated terrain.  (added 3/6/19)  
+- KML2SHP_Converter - generates a zip archive of shape files based on KML file layers
+- Centroid_KML - "KML-Centroid-Generator"
+- KML2CSV - converts KML (XML) to .csv spreadsheet format
+- KMLSubsetFilter - from a KML file, this tool returns a subset KML based on two query strings (searches the description field of the KML)
+
+
+
+
+*Some more Bits, Bobs, Widgets & R / Shiny demos:*
+
+
+| [![ ](https://img.youtube.com/vi/79XI5FTxD2E/0.jpg)](https://www.youtube.com/watch?v=79XI5FTxD2E) | [![ ](https://img.youtube.com/vi/sf7rDg86CJE/0.jpg)](https://www.youtube.com/watch?v=sf7rDg86CJE) |
+|---|---|
+
 
 
 * * *
@@ -126,6 +242,98 @@ write.csv(foo, paste0(foo_name, '.csv'))
 to_SHP(foo_name)
 ```
 
+- - -
+
+<h4 id="wsl"> </h4>     
+
+  
+## *Using Ubuntu GDAL on Windows w/ WSL*
+
+
+
+[LINK: get the WSL shell from Microsoft](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+
+```
+# In the WSL shell:
+
+sudo apt-get install python3.6-dev -y
+sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
+sudo apt-get install libgdal-dev -y
+sudo apt-get install gdal-bin -y
+
+# See here for more notes including Python bindings:
+# https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html
+```     
+
+*In a new Shell:*
+
+```
+# Double check the shell does indeed have GDAL in $PATH:
+gdalinfo --version
+
+```
+
+
+- - - 
+
+
+
+## *Using GDAL on Mac OSX*
+
+
+<h4 id="osx"> </h4>     
+
+[Visit this blog post](https://www.transscendsurvival.org/2019/10/07/gdal-for-gis-on-unix-using-a-mac-or-better-linux/)
+
+Note: in my opinion, homebrew and macPorts are good ideas- try them!  If you don’t have Homebrew, get it now:
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+(….However, port or brew installing QGIS and GDAL (primarily surrounding the delicate links between QGIS / GDAL / Python 2 & 3 / OSX local paths) can cause baffling issues.  If possible, don’t do that.  Use QGIS installers from the official site or build from source!)
+
+if you need to resolve issues with your GDAL packages via removal:
+on MacPorts, try similar:
+```
+sudo port uninstall qgis py37-gdal
+
+# on homebrew, list then remove (follow its instructions):
+
+brew list
+brew uninstall gdal geos gdal2  
+```     
+*!!! NOTE: I am investigating more reliable built-from-source solutions for gdal on mac.*      
+
+Really!
+
+There are numerous issues with brew-installed gdal.  Those I have run into include:
+- linking issues with the crucial directory “gdal-data” (libraries)
+- linking issues Python bindings and python 2 vs. 3 getting confused
+- internal raster library conflicts against the gdal requirements
+- Proj.4 inconsistencies (see source notes below)
+- OSX Framework conflicts with source / brew / port (http://www.kyngchaos.com/software/frameworks/)
+- Linking conflicts with old, qgis default / LTR libraries against new ones
+- Major KML discrepancies: expat standard vs libkml.  
+```
+brew install gdal
+#
+# brew install qgis can work well too.  At least you can unbrew it!
+#
+```
+
+Next, assuming your GDAL is not broken (on Mac OS this is rare and considered a miracle):
+
+```
+# double check CLI is working:
+gdalinfo --version
+# “GDAL 2.4.0, released 2018/12/14”
+gdal_merge.py
+# list of args
+```
+
+- - - 
+
+
+- - - 
 
   
 <h4 id="windows"> </h4>     
@@ -212,171 +420,7 @@ This way, you will hit "option/alt" each time you restart/boot your computer to 
 
 If you need to manage your cloud storage because of a itsy mac SSD, my solution is still ODrive.   <a href="https://www.odrive.com/">https://www.odrive.com/</a>
 
-- - -
-
-<h4 id="wsl"> </h4>     
-
-  
-## *Using Ubuntu GDAL on Windows w/ WSL*
-
-
-
-[LINK: get the WSL shell from Microsoft](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-
-```
-# In the WSL shell:
-
-sudo apt-get install python3.6-dev -y
-sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
-sudo apt-get install libgdal-dev -y
-sudo apt-get install gdal-bin -y
-
-# See here for more notes including Python bindings:
-# https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html
-```     
-
-*In a new Shell:*
-
-```
-# Double check the shell does indeed have GDAL in $PATH:
-gdalinfo --version
-
-```
-
-- - -
-
-<h4 id="ebird"> </h4>     
-
-
-## *eBird regionCode*
-
-
-The [Ebird dataset](https://ebird.org/science/download-ebird-data-products) is awesome.  While directly handling data as a **massive** delimited file- as distributed by [the eBird people-](https://ebird.org/data/download) is cumbersome at best, the [ebird api](https://documenter.getpostman.com/view/664302/S1ENwy59?version=latest#e18ea3b5-e80c-479f-87db-220ce8d9f3b6) offers a fairly straightforward and efficient alternative for a few choice bits and batches of data.  
-
-
-- The eBird `AWK` tool for filtering the actual delimited data can be [found over here](https://cornelllabofornithology.github.io/auk/):
-
-    ```install.packages("auk")```   
-
-It is worth noting R + `auk` (or frankly any R centered filtering method) will quickly become limited by the single-threaded approach of R, and how you're managing memory as you iterate.  Working and querying the data from a proper database quickly becomes necessary.  
-
-Most conveniently, the [eBird API already exists.](https://documenter.getpostman.com/view/664302/S1ENwy59?version=latest#e18ea3b5-e80c-479f-87db-220ce8d9f3b6)
-
-...The API package for R is [over here](https://cran.r-project.org/web/packages/rebird/index.html):        
-```install.packages("rebird")```     
-
-...There is also a neat Python wrapper [over here](https://pypi.org/project/ebird-api/):           
-```pip3 install ebird-api```
-
-***Region Codes:***     
-
-I'm not sure why, but some methods use normal latitude / longitude in decimal degrees while some others use `"regionCode"`, which seems to be some kind of eBird special.  Only ever seen this format in ebird data.
-
-For example, recent observations uses `regionCode`:     
-```shell script
-# GET Recent observations in a region:
-# https://api.ebird.org/v2/data/obs/{{regionCode}}/recent
-```
-...But nearby recent observations uses latitude / longitude:   
-```
-# GET Recent nearby observations:
-# https://api.ebird.org/v2/data/obs/geo/recent?lat={{lat}}&lng={{lng}}
-```
-
-Regardless, lets just write a function to convert decimal degrees to this `regionCode` thing.  Here's mine:
-
-
-```Python3
-#!/usr/bin/env python3
-"""
-# provide latitude & longitude, return eBird "regionCode"
-Written by Jess Sullivan
-@ https://transscendsurvival.org/
-"""
-import requests
-import json
-
-
-def get_regioncode(lat, lon):
-
-    # this municipal api is a publicly available, no keys needed afaict
-    census_url = str('https://geo.fcc.gov/api/census/area?lat=' +
-                     str(lat) +
-                     '&lon=' +
-                     str(lon) +
-                     '&format=json')
-
-    # send out a GET request:
-    payload = {}
-    get = requests.request("GET", census_url, data=payload)
-
-    # parse the response, all api values are contained in list 'results':
-    response = json.loads(get.content)['results'][0]
-
-    # use the last three digits from the in-state fips code as the "subnational 2" identifier:
-    fips = response['county_fips']
-
-    # assemble and return the "subnational type 2" code:
-    regioncode = 'US-' + response['state_code'] + '-' + fips[2] + fips[3] + fips[4]
-    print('formed region code: ' + regioncode)
-    return regioncode
-
-```
-
-
-* * *
-
-## *Using GDAL on Mac OSX*
-
-
-<h4 id="osx"> </h4>     
-
-[Visit this blog post](https://www.transscendsurvival.org/2019/10/07/gdal-for-gis-on-unix-using-a-mac-or-better-linux/)
-
-Note: in my opinion, homebrew and macPorts are good ideas- try them!  If you don’t have Homebrew, get it now:
-```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-(….However, port or brew installing QGIS and GDAL (primarily surrounding the delicate links between QGIS / GDAL / Python 2 & 3 / OSX local paths) can cause baffling issues.  If possible, don’t do that.  Use QGIS installers from the official site or build from source!)
-
-if you need to resolve issues with your GDAL packages via removal:
-on MacPorts, try similar:
-```
-sudo port uninstall qgis py37-gdal
-
-# on homebrew, list then remove (follow its instructions):
-
-brew list
-brew uninstall gdal geos gdal2  
-```     
-*!!! NOTE: I am investigating more reliable built-from-source solutions for gdal on mac.*      
-
-Really!
-
-There are numerous issues with brew-installed gdal.  Those I have run into include:
-- linking issues with the crucial directory “gdal-data” (libraries)
-- linking issues Python bindings and python 2 vs. 3 getting confused
-- internal raster library conflicts against the gdal requirements
-- Proj.4 inconsistencies (see source notes below)
-- OSX Framework conflicts with source / brew / port (http://www.kyngchaos.com/software/frameworks/)
-- Linking conflicts with old, qgis default / LTR libraries against new ones
-- Major KML discrepancies: expat standard vs libkml.  
-```
-brew install gdal
-#
-# brew install qgis can work well too.  At least you can unbrew it!
-#
-```
-
-Next, assuming your GDAL is not broken (on Mac OS this is rare and considered a miracle):
-
-```
-# double check CLI is working:
-gdalinfo --version
-# “GDAL 2.4.0, released 2018/12/14”
-gdal_merge.py
-# list of args
-```
+- - - 
 
 
 ## *Example DEM stiching from GDAL*
@@ -451,3 +495,6 @@ You can now copy + paste your script anywhere you want and run it there.  script
 *See /Notes_GDAL/README.md for notes on building GDAL from source on OSX*
 
 <img title='Results' src="GDAL_Bash_DEM_Merge.png" width='300px' >  
+
+
+
