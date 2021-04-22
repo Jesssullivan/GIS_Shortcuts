@@ -15,6 +15,7 @@
 [**Shell macros from R**](#rmacros) <br>
 [**When it must be Windows**](#windows) <br>
 [**Windows WSL - Ubuntu GDAL setup**](#wsl) <br>
+[**Ubuntu & Jupyter cartopy setup**](#cartopy) <br>
 [**Mac OSX - GDAL setup**](#osx) <br>
 [**Bash Example - DEM stitching**](#demstitch) <br>
 [**Link to rJDK management info**](https://github.com/Jesssullivan/rJDKmanager) <br>
@@ -274,8 +275,34 @@ gdalinfo --version
 ```
 
 
+
 - - - 
 
+
+## *Ubuntu & Jupyter: `cartopy` setup*
+
+
+<h4 id="cartopy"> </h4>
+
+
+```
+# install libraries:
+sudo apt install libproj-dev proj-data proj-bin
+sudo apt install libgeos-dev
+```
+
+```
+# install cython, cartopy:
+pip3 install cython 
+pip3 install cartopy
+```
+```
+# fix shapely:
+pip3 uninstall shapely
+pip3 install shapely --no-binary shapely
+```
+
+- - -
 
 
 ## *Using GDAL on Mac OSX*
